@@ -1,0 +1,35 @@
+import json
+import requests
+import re
+import imageio
+from skimage import transform,io,data
+from skimage.viewer import ImageViewer
+import pandas as pd
+%matplotlib inline
+import matplotlib.pyplot as plt
+import seaborn as sb
+import datetime
+
+MyApi = 'iGwItApAJHl4RwvhOdVnV7n3GeWQPtukk8yclAKA'
+ApiUrl=  'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos' #iGwItApAJHl4RwvhOdVnV7n3GeWQPtukk8yclAKA
+earthdate ='2022-01-01'
+camera = 'all'
+page ='1'
+sb.set(rc={"figure.figsize":(20,5)})
+
+response = requests.get("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=2021-12-3&api_key=iGwItApAJHl4RwvhOdVnV7n3GeWQPtukk8yclAKA")
+print(response.status_code)
+
+response = requests.get(ApiUrl, params ={'api_key':MyApi})
+print(response.status_code)
+
+a=json.loads(response.text)
+print(type(a))
+df=pd.DataFrame(a)
+df
+
+b=df['photo_manifest']['photos']
+pf=pd.DataFrame(b)
+pf['earthdatep']=pd.to_datetime(pd['earth_date'])
+c=pf.query('earth_datep>="2021-01-01"')
+c.sort_values(by=['earth_datep'])
